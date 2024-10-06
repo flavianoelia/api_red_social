@@ -1,22 +1,23 @@
 const db = require("../models");
 const Usuario = db.usuario;
-const Oficina = db.oficina;
-const { Op, where } = require('sequelize');
+//const Oficina = db.oficina;
+//const { Op, where } = require('sequelize');
 
-const home = (req, res) => {
-    res.status(200).send("Ruta principal de personas");
-}
+//const home = (req, res) => {
+//    res.status(200).send("Ruta principal de usuarios");
+//}
 
 /* 
 Esta función es un controlador asíncrono que maneja la solicitud para listar 
-todas las personas almacenadas en la base de datos.
+todas las usuarios almacenadas en la base de datos.
 Utiliza el modelo 'Usuario' para buscar y recuperar todos los registros (findAll()), y los 
 devuelve como respuesta en formato JSON con un código de estado 200 (OK).
 En caso de que ocurra un error durante la consulta a la base de datos, 
 se captura (catch) y se devuelve un mensaje de error con un código de estado 500 
 (Error Interno del Servidor).
 */
-const list = async(req, res) => {
+/*
+const register = async(req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 2;
@@ -51,24 +52,24 @@ const list = async(req, res) => {
         res.status(500).send(error.message);
     }
 }
-
+*/
 /* 
 Esta función es un controlador asíncrono que maneja la solicitud para crear 
-una nueva persona en la base de datos. Utiliza el modelo 'Usuario' para 
+una nueva usuario en la base de datos. Utiliza el modelo 'Usuario' para 
 crear un nuevo registro (create) basado en los datos proporcionados en el cuerpo 
-de la solicitud (req.body), y devuelve la nueva persona con un código 
+de la solicitud (req.body), y devuelve la nueva usuario con un código 
 de estado 201 (Creado). Si ocurre un error durante el proceso, se captura 
 y se devuelve un mensaje de error con un código de estado 500 
 (Error Interno del Servidor).
 */
-const create = async(req, res) => {
-    const { nombre, mail, edad } = req.body;
-    if (!nombre || !mail || !edad) {
+const register = async(req, res) => {
+    const { nombre, mail, nickname, password } = req.body;
+    if (!nombre || !mail || !nickname, !password) {
         return res.status(400).send({ message: "Faltan datos de completar" });
     }
     try {
-        const persona = await Usuario.create(req.body);
-        res.status(201).send(persona);
+        const usuario = await Usuario.create(req.body);
+        res.status(201).send(usuario);
     } catch (error) {
         if (error.name === "SequelizeUniqueConstraintError") {
             res.status(400).send({ message: "Mail ya existente" });
@@ -80,12 +81,12 @@ const create = async(req, res) => {
         }
     }
 };
-
+/*
 const findById = async(req, res) => {
     try {
-        const persona = await Usuario.findByPk(req.params.id);
-        if (persona) {
-            res.status(200).send(persona);
+        const usuario = await Usuario.findByPk(req.params.id);
+        if (usuario) {
+            res.status(200).send(usuario);
         } else {
             res.status(404).send({ message: "Not found" });
         }
@@ -96,14 +97,14 @@ const findById = async(req, res) => {
 
 const update = async(req, res) => {
     try {
-        const persona = await Usuario.update(req.body, {
+        const usuario = await Usuario.update(req.body, {
             where: { id: req.params.id }
         })
-        if (persona[0]) {
-            const personaUpdated = await Usuario.findByPk(req.params.id);
+        if (usuario[0]) {
+            const usuarioUpdated = await Usuario.findByPk(req.params.id);
             res.status(200).send({
                 message: "Actualizado",
-                persona: personaUpdated
+                usuario: usuarioUpdated
             });
         } else {
             res.status(404).send({ message: "Not found" });
@@ -138,10 +139,10 @@ const buscarPorNombre = async(req, res) => {
 
 const deletePersona = async(req, res) => {
     try {
-        const persona = await Usuario.destroy({
+        const usuario = await Usuario.destroy({
             where: { id: req.params.id }
         });
-        if (persona) {
+        if (usuario) {
             res.status(200).send({ message: "Eliminado!!!" });
         } else {
             res.status(404).send({ message: "Escribi bien Go...." });
@@ -150,14 +151,16 @@ const deletePersona = async(req, res) => {
         res.status(500).send({ message: "Error interno del servidor", tipo: error.name });
     }
 }
-
+*/
 
 module.exports = {
+    register,
+    /*
     home,
     list,
     create,
     findById,
     update,
     buscarPorNombre,
-    deletePersona
+    deletePersona*/
 }

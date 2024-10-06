@@ -6,10 +6,6 @@ const Usuario = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        id_usuario: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        },
         mail: {
             type: Sequelize.STRING,
             allowNull: false,
