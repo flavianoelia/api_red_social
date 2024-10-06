@@ -15,11 +15,28 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.usuario = require("./persona")(sequelize, Sequelize);
-db.oficina = require("./oficina")(sequelize, Sequelize);
+db.Usuario = require("./usuario")(sequelize, Sequelize);
+db.Following = require("./following")(sequelize, Sequelize);
+db.Post = require('./post')(sequelize, Sequelize)
+
+// Relaciones entre modelos
+db.Usuario.hasMany(db.Post, { foreignKey: 'id_usuario' });
+db.Post.belongsTo(db.Usuario, { foreignKey: 'id_usuario' });
 
 // Establecer relaciones
-db.oficina.hasMany(db.usuario, { foreignKey: 'oficinaId' });
-db.usuario.belongsTo(db.oficina, { foreignKey: 'oficinaId' });
+db.Usuario.belongsToMany(db.Usuario, {
+    through: db.Following,
+    as: 'seguidos', // Alias para los seguidores de un usuario
+    foreignKey: 'id_usuario', // Clave foránea que referencia al usuario que se sigue
+    otherKey: 'id_usuario_seguido' // Clave foránea que referencia al que sigue
+});
 
+db.Usuario.belongsToMany(db.Usuario, {
+    through: db.Following,
+    as: 'seguidores', // Alias para los usuarios que un usuario está siguiendo
+    foreignKey: 'id_usuario_seguido', // Clave foránea que referencia al usuario que sigue
+    otherKey: 'id_usuario' // Clave foránea que referencia al usuario que esta siendo seguido
+});
+
+// Inicializar la conexión con la base de datos
 module.exports = db;
