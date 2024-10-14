@@ -1,3 +1,4 @@
+const upload = require("../middlewares/uploadmiddleware");
 const db = require("../models");
 const Usuario = db.usuario;
 //const Oficina = db.oficina;
@@ -72,7 +73,7 @@ const register = async(req, res) => {
         res.status(201).send(usuario);
     } catch (error) {
         if (error.name === "SequelizeUniqueConstraintError") {
-            res.status(400).send({ message: "Mail ya existente" });
+            res.status(400).send({ message: "Mail o nickname ya existente" });
         } else {
             res.status(500).send({
                 message: error.message,
@@ -94,9 +95,20 @@ const findById = async(req, res) => {
         res.status(500).send({ message: "Error interno del server" });
     }
 }
+*/
 
 const update = async(req, res) => {
     try {
+        const { id } = req.params;
+        const { nombre, nickname, mail, password} = req.body;
+        let avatarPath = null;
+        if (req.file){
+            avatarPath = 'uploads/avatars/${req.file.filename}'
+        }
+        console.log(avatarPath)
+
+        /*
+        //Buscar el usuario por id
         const usuario = await Usuario.update(req.body, {
             where: { id: req.params.id }
         })
@@ -113,6 +125,32 @@ const update = async(req, res) => {
         res.status(500).send({ message: "Error interno del servidor" });
     }
 }
+*/
+        //buscar el usuario por id
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) {
+            return res.status(404).send({ message: "No se encontró el usuario" });
+        }
+        //Actualizar los campos
+        usuario.nombre = nombre;
+        usuario.nickname = nickname;
+        usuario.mail = mail;
+        if (avatarPath) {
+            usuario.avatar = avatarPath; // Guardar la ruta del avatar
+        }
+
+        //Solo actualizar la contraseña si fue proporcionada
+        if (password) {
+            usuario.password = password;
+        }
+
+        await usuario.save(); //Sequelize activará el hook 'beforeUpdate' si es necesario
+
+        res.status(200).send({message: "Usuario actualizado", usuario });
+    } catch (error) {
+        res.status(500).send({ message: "Error interno del servidor" });
+    }
+
 
 const buscarPorNombre = async(req, res) => {
     try {
