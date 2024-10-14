@@ -151,7 +151,7 @@ const update = async(req, res) => {
         res.status(500).send({ message: "Error interno del servidor" });
     }
 
-
+/*
 const buscarPorNombre = async(req, res) => {
     try {
         const keyword = req.body.keyword;
@@ -200,5 +200,6 @@ module.exports = {
     findById,
     update,
     buscarPorNombre,
-    deletePersona*/
+    deletePersona
+    */
 }
